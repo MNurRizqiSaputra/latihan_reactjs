@@ -27,13 +27,13 @@ function Header(props){
 
 function Body(props){
 
-    const {children, title} = props;
+    const {children, name} = props;
 
     return (
         <div className="px-5 pb-5">
                 <a href="#">
                     <h5 className="text-xl font-semibold tracking-tight text-white">
-                        {title}
+                        {name}
                     </h5>
                 </a>
                 <p className="text-gray-300 text-m">
