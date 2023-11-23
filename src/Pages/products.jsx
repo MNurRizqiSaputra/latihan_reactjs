@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Button from "../components/Elements/Button";
 import CardProduct from "../components/Fragments/CardProduct";
 import Counter from "../components/Fragments/Counter";
@@ -33,11 +33,23 @@ const email = localStorage.getItem("email");
 function ProductsPage() {
 
     const [cart, setCart] = useState([
-        {
-            id: "1",
-            qty: 1,
-        }
     ]);
+
+    const [totalPrice, setTotalPrice] = useState(0);
+    useEffect(() => {
+        setCart(JSON.parse(localStorage.getItem("cart")) || []); //untuk mengkonversi JSON menjadi array/object
+    }, []);
+
+    useEffect(() => {
+        if(cart.length > 0) {
+            const sum = cart.reduce((acc, item) => {
+                const product = products.find(product => product.id === item.id);
+                return acc + (product.price * item.qty);
+            }, 0);
+            setTotalPrice(sum);
+            localStorage.setItem("cart", JSON.stringify(cart)); //untuk mengkonversi array/object menjadi JSON
+        }
+    }, [cart]);
 
     // Logout
     const handleLogout = () => {
@@ -109,13 +121,19 @@ function ProductsPage() {
                                 );
                                 
                             })}
+                                <tr>
+                                    <td colSpan={3} className="border-t-2 border-black"> Total Price</td>
+                                    <td>
+                                        {totalPrice.toLocaleString("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0})}
+                                    </td>
+                                </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
                 <Counter />
-            </div>
+            </div> */}
         </Fragment>
     );
 }
