@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef} from "react";
 import Button from "../components/Elements/Button";
 import CardProduct from "../components/Fragments/CardProduct";
 import Counter from "../components/Fragments/Counter";
@@ -67,6 +67,28 @@ function ProductsPage() {
         }
     }
 
+    // UseRef
+    const cartRef = useRef(
+        (JSON.parse(localStorage.getItem("cart")) || [])
+    );
+
+    // handleAddToCartRef
+    const handleAddToCartRef = (id) => {
+        cartRef.current = [...cartRef.current, {id, qty: 1}];
+        localStorage.setItem("cart", JSON.stringify(cartRef.current));
+    }
+
+    // totalPriceRef
+    const totalPriceRef = useRef(null);
+    useEffect(() => {
+        if (cart.length > 0) {
+            totalPriceRef.current.style.display = "table-row";
+        } else {
+            totalPriceRef.current.style.display = "none";
+        }
+    }, [cart]);
+
+
     return (
         <Fragment>
             <div className="text-md font-bold text-white flex justify-end bg-blue-500 px-10 h-20 p-5">Selamat Datang {email}
@@ -121,7 +143,7 @@ function ProductsPage() {
                                 );
                                 
                             })}
-                                <tr>
+                                <tr ref={totalPriceRef}>
                                     <td colSpan={3} className="border-t-2 border-black"> Total Price</td>
                                     <td>
                                         {totalPrice.toLocaleString("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0})}
